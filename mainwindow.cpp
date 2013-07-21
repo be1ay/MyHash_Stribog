@@ -1,8 +1,4 @@
-/*
- * Copyright (c) 2013, Alexey Belkin.
- * All rights reserved.
- *
- */
+//Alexey Belkin
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFileDialog>
@@ -166,4 +162,3 @@ void MainWindow::on_actionAbout_triggered()
       msgBox.exec();
     //qDebug()<<"About";
 }
-//end Alexey Belkin

@@ -1,3 +1,4 @@
+//Alexey Belkin
 #include "mainwindow.h"
 #include <QApplication>
 
