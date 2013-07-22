@@ -7,7 +7,6 @@
 
 #include <string.h>
 
-//#include "gost3411-2012-config.h"
 
 #if defined _MSC_VER
 #define ALIGN(x) __declspec(align(x))
@@ -15,15 +14,8 @@
 #define ALIGN(x) __attribute__ ((__aligned__(x)))
 #endif
 
-#if defined   __GOST3411_HAS_SSE41__
-#include "gost3411-2012-sse41.h"
-#elif defined __GOST3411_HAS_SSE2__
-#include "gost3411-2012-sse2.h"
-#elif defined __GOST3411_HAS_MMX__ 
-#include "gost3411-2012-mmx.h"
-#else
+
 #include "gost3411-2012-ref.h"
-#endif
 
 ALIGN(16) union uint512_u
 {

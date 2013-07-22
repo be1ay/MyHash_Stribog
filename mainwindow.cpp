@@ -1,4 +1,4 @@
-//Alexey Belkin
+﻿//Alexey Belkin
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFileDialog>
@@ -101,7 +101,7 @@ emit set_max(0);
      if (file.open(QIODevice::ReadOnly) )
                {
                  while (!file.atEnd()) {
-                 QByteArray line = file.read(1024);
+                 QByteArray line = file.read(4096);
                  GOST34112012Update(CTX, (unsigned char*)(line.data()), line.size());
                }
              }
@@ -158,7 +158,8 @@ void MainWindow::on_rb256_clicked()
 void MainWindow::on_actionAbout_triggered()
 {
       QMessageBox msgBox;
-      msgBox.setText("©2013 MyHash v1.0\nАвтор: Белкин Алексей\nДля вычисления контрольной суммы по ГОСТ3411-2012 в программе использован алгоритм, разработанный Алексеем Дегтяревым (streebog.net)");
+      QString str="©2013 MyHash v1.0\nАвтор: Белкин Алексей\nДля вычисления контрольной суммы по ГОСТ3411-2012 в программе использован алгоритм, разработанный Алексеем Дегтяревым (streebog.net)";
+      msgBox.setText(str.toUtf8());
       msgBox.exec();
     //qDebug()<<"About";
 }
