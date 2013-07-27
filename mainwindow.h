@@ -24,6 +24,12 @@ private slots:
 
     void on_actionAbout_triggered();
 
+    void on_rb_MD5_clicked();
+
+    void on_rbSha256_clicked();
+
+    void on_rb_G2012_clicked();
+
 private:
     Ui::MainWindow *ui;
 
@@ -51,22 +57,8 @@ public slots:
 
     void MyCalcMD5();
     void GOST2012();
+    void MyCalcSha256();
    // void start(); // в этом слоте будут выполняться все действия
     void stop(); // этот слот будет говорить нам, что пора завершать работу (просто сделает needStop=true)
 };
 #endif // MAINWINDOW_H
-/*
-//mainwindow.h
-public:
-    QString labelText();
-    void setLabelText(QString string);
-
-//mainwindow.cpp
-QString MainWindow::labelText() {
-    return ui->label->text();
-}
-
-void MainWindow::setLabelText(QString text) {
-    ui->label->setText(text);
-}
-*/

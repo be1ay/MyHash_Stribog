@@ -115,6 +115,26 @@ emit set_max(0);
 
     emit sendString(rez);emit set_max(100);emit change_value(100);emit finished();emit sendStringDone("Complete");
 }
+
+void MyClass::MyCalcSha256()
+{
+    emit set_max(0);
+            QCryptographicHash hash(QCryptographicHash::Sha256);
+            QFile file(fname);
+            if (file.open(QIODevice::ReadOnly) )
+              {
+
+                while (!file.atEnd()) {
+                QByteArray line = file.read(1024);
+                hash.addData(line);
+              }
+            }
+            file.close();
+            QString rez = hash.result().toHex().data();
+            emit sendString(rez);emit set_max(100);emit change_value(100);
+    emit finished();emit sendStringDone("Complete");
+}
+
 void MainWindow::on_pushButton_clicked()
 {   fname = QFileDialog::getOpenFileName(this, tr("Open File"),0,0);
     ui->label_3->setText("Calculating...");
@@ -131,6 +151,10 @@ void MainWindow::on_pushButton_clicked()
     if(ui->rb_G2012->isChecked()){
        connect(thread,SIGNAL(started()),job,SLOT(GOST2012()));
        connect(job,SIGNAL(sendString(QString)),ui->lineEdit,SLOT(setText(QString)));
+    }
+    if(ui->rbSha256->isChecked()){
+       connect(thread,SIGNAL(started()),job,SLOT(MyCalcSha256()));
+       connect(job,SIGNAL(sendString(QString)),ui->lineEdit_3,SLOT(setText(QString)));
     }
     connect(job,SIGNAL(finished()),thread,SLOT(quit())); // когда работа будет завершена, завершить поток
             connect(job,SIGNAL(finished()),job,SLOT(deleteLater())); // когда работа будет завершена, удалить наш экземпляр класса
@@ -162,4 +186,28 @@ void MainWindow::on_actionAbout_triggered()
       msgBox.setText(str.toUtf8());
       msgBox.exec();
     //qDebug()<<"About";
+}
+
+void MainWindow::on_rb_MD5_clicked()
+{
+    ui->rb256->setDisabled(true);
+    ui->rb512->setDisabled(true);
+    ui->rbSha256->setChecked(false);
+    ui->rb_G2012->setChecked(false);
+}
+
+void MainWindow::on_rbSha256_clicked()
+{
+    ui->rb256->setDisabled(true);
+    ui->rb512->setDisabled(true);
+    ui->rb_MD5->setChecked(false);
+    ui->rb_G2012->setChecked(false);
+}
+
+void MainWindow::on_rb_G2012_clicked()
+{
+    ui->rb256->setDisabled(false);
+    ui->rb512->setDisabled(false);
+    ui->rb_MD5->setChecked(false);
+    ui->rbSha256->setChecked(false);
 }
