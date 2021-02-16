@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2013, Alexey Degtyarev. 
+ * Copyright (c) 2013, Alexey Degtyarev <alexey@renatasystems.org>. 
  * All rights reserved.
  *
  * Precalculation of matrix A multiplication.
  *
- * $Id: gost3411-2012-precalc.h 526 2013-05-26 18:24:29Z alexey $
+ * $Id$
  */
 
 #ifndef __GOST3411_BIG_ENDIAN__

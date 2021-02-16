@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2013, Alexey Degtyarev. 
+ * Copyright (c) 2013, Alexey Degtyarev <alexey@renatasystems.org>. 
  * All rights reserved.
  *
  * GOST R 34.11-2012 core and API functions.
  *
- * $Id: gost3411-2012-core.c 526 2013-05-26 18:24:29Z alexey $
+ * $Id$
  */
 
 #include "gost3411-2012-core.h"
@@ -45,37 +45,32 @@ GOST34112012Init(GOST34112012Context *CTX, const unsigned int digest_size)
 static inline void
 pad(GOST34112012Context *CTX)
 {
-    unsigned char buf[64];
-
     if (CTX->bufsize > 63)
         return;
 
-    memset(&buf, 0x00, sizeof buf);
-    memcpy(&buf, CTX->buffer, CTX->bufsize);
+    memset(CTX->buffer + CTX->bufsize,
+        0x00, sizeof(CTX->buffer) - CTX->bufsize);
 
-    buf[CTX->bufsize] = 0x01;
-    memcpy(CTX->buffer, &buf, sizeof buf);
+    CTX->buffer[CTX->bufsize] = 0x01;
 }
 
 static inline void
 add512(const union uint512_u *x, const union uint512_u *y, union uint512_u *r)
 {
 #ifndef __GOST3411_BIG_ENDIAN__
-    unsigned int CF, OF;
+    unsigned int CF;
     unsigned int i;
 
     CF = 0;
     for (i = 0; i < 8; i++)
     {
-        r->QWORD[i] = x->QWORD[i] + y->QWORD[i];
-        if ( (r->QWORD[i] < y->QWORD[i]) || 
-             (r->QWORD[i] < x->QWORD[i]) )
-            OF = 1;
-        else
-            OF = 0;
+        const unsigned long long left = x->QWORD[i];
+        unsigned long long sum;
 
-        r->QWORD[i] += CF;
-        CF = OF;
+        sum = left + y->QWORD[i] + CF;
+        if (sum != left)
+            CF = (sum < left);
+        r->QWORD[i] = sum;
     }
 #else
     const unsigned char *xp, *yp;
@@ -148,22 +143,20 @@ g(union uint512_u *h, const union uint512_u *N, const unsigned char *m)
 static inline void
 stage2(GOST34112012Context *CTX, const unsigned char *data)
 {
-    g(&(CTX->h), &(CTX->N), data);
+    union uint512_u m;
+
+    memcpy(&m, data, sizeof(m));
+    g(&(CTX->h), &(CTX->N), (const unsigned char *)&m);
 
     add512(&(CTX->N), &buffer512, &(CTX->N));
-    add512(&(CTX->Sigma), (const union uint512_u *) data, &(CTX->Sigma));
+    add512(&(CTX->Sigma), &m, &(CTX->Sigma));
 }
 
 static inline void
 stage3(GOST34112012Context *CTX)
 {
-    ALIGN(16) union uint512_u buf;
+    ALIGN(16) union uint512_u buf = {{ 0 }};
 
-    memset(&buf, 0x00, sizeof buf);
-    memcpy(&buf, &(CTX->buffer), CTX->bufsize);
-    memcpy(&(CTX->buffer), &buf, sizeof uint512_u);
-
-    memset(&buf, 0x00, sizeof buf);
 #ifndef __GOST3411_BIG_ENDIAN__
     buf.QWORD[0] = CTX->bufsize << 3;
 #else
@@ -189,16 +182,7 @@ GOST34112012Update(GOST34112012Context *CTX, const unsigned char *data, size_t l
 {
     size_t chunksize;
 
-    while (len > 63 && CTX->bufsize == 0)
-    {
-        stage2(CTX, data);
-
-        data += 64;
-        len  -= 64;
-    }
-
-    while (len)
-    {
+    if (CTX->bufsize) {
         chunksize = 64 - CTX->bufsize;
         if (chunksize > len)
             chunksize = len;
@@ -215,6 +199,19 @@ GOST34112012Update(GOST34112012Context *CTX, const unsigned char *data, size_t l
 
             CTX->bufsize = 0;
         }
+    }
+
+    while (len > 63)
+    {
+        stage2(CTX, data);
+
+        data += 64;
+        len  -= 64;
+    }
+
+    if (len) {
+        memcpy(&CTX->buffer, data, len);
+        CTX->bufsize = len;
     }
 }
 

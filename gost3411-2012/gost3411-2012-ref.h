@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2013, Alexey Degtyarev. 
+ * Copyright (c) 2013, Alexey Degtyarev <alexey@renatasystems.org>. 
  * All rights reserved.
  *
  * Portable and simple (thus sometimes slow) implementation of core functions.
  *
- * $Id: gost3411-2012-ref.h 526 2013-05-26 18:24:29Z alexey $
+ * $Id$
  */
 
 #ifdef __GOST3411_HAS_SSE2__

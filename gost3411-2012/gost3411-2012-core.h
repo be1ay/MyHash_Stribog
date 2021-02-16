@@ -1,13 +1,13 @@
 /*
- * Copyright (c) 2013, Alexey Degtyarev. 
+ * Copyright (c) 2013, Alexey Degtyarev <alexey@renatasystems.org>. 
  * All rights reserved.
  *
- * $Id: gost3411-2012-core.h 526 2013-05-26 18:24:29Z alexey $
+ * $Id$
  */
 
 #include <string.h>
 
-//#include "gost3411-2012-config.h"
+#include "gost3411-2012/gost3411-2012-config.h"
 
 #if defined _MSC_VER
 #define ALIGN(x) __declspec(align(x))

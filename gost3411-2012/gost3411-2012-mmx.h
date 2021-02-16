@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 2013, Alexey Degtyarev. 
+ * Copyright (c) 2013, Alexey Degtyarev <alexey@renatasystems.org>. 
  * All rights reserved.
  *
- * $Id: gost3411-2012-mmx.h 526 2013-05-26 18:24:29Z alexey $
+ * $Id$
  */
 
 #ifndef __GOST3411_HAS_MMX__
